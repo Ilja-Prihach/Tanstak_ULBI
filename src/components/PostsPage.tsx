@@ -1,5 +1,6 @@
-import {useQuery} from "@tanstack/react-query";
+import { useSuspenseQuery} from "@tanstack/react-query";
 import {api} from "../api/api.ts";
+import {Suspense} from "react";
 
 type Post = {
     id: number;
@@ -17,31 +18,40 @@ function getAuthData() {
     });
 }
 
-export const PostsPage = () => {
-    const isAutch = false
-
-    const {data: userData,} = useQuery({
+function Postlist() {
+    const {data: userData,} = useSuspenseQuery({
         queryKey: ["userData"],
         queryFn: getAuthData,
         staleTime: 5000,
 
     });
 
-    const {data: posts,} = useQuery({
+    const {data: posts,} = useSuspenseQuery({
         queryKey: ["posts"],
         queryFn: getPosts,
         staleTime: 5000,
-        enabled: !userData
     });
 
+    return (
+        <div>
+            {posts?.map((post) => (
+                <div key={post.id}>
+                    {post.id}.{post.title}
+                </div>
+            ))}
+        </div>
+    )
+}
+
+
+
+export const PostsPage = () => {
 
   return (
     <div className="flex flex-col gap-4">
-        {posts?.map((post) => (
-            <div key={post.id}>
-                {post.id}.{post.title}
-            </div>
-        ))}
+        <Suspense fallback={<h1>Loading post...</h1>}>
+            <Postlist/>
+        </Suspense>
     </div>
   );
 };
