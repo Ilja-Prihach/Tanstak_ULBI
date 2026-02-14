@@ -15,17 +15,20 @@ export const PostsPage = () => {
         data: posts,
         isLoading,
         isPending,
-        isFetching
+        isFetching,
+        status,
+        fetchStatus
     } = useQuery({
         queryKey: ["posts"],
         queryFn: getPosts,
         staleTime: 5000,
-        gcTime: 10000,
     });
 
 
   return (
     <div className="flex flex-col gap-4">
+        {status}
+        {fetchStatus}
         {isLoading && <div>Loading...</div>}
         {isPending && <div>Pending...</div>}
         {isFetching && <div>Fetching...</div>}
