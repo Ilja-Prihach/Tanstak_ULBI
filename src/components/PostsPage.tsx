@@ -11,7 +11,7 @@ function getPosts() {
 }
 
 export const PostsPage = () => {
-    const {data: posts} = useQuery({
+    const {data: posts, isLoading, isPending, isFetching} = useQuery({
         queryKey: ["posts"],
         queryFn: getPosts,
     });
@@ -19,6 +19,9 @@ export const PostsPage = () => {
 
   return (
     <div className="flex flex-col gap-4">
+        {isLoading && <div>Loading...</div>}
+        {isPending && <div>Pending...</div>}
+        {isFetching && <div>Fetching...</div>}
         {posts?.map((post) => (
             <div key={post.id}>
                 {post.id}.{post.title}
