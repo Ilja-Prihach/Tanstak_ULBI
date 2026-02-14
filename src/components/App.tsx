@@ -1,7 +1,11 @@
 import { Outlet } from "react-router";
 import { Header } from "./Header";
 
+
 function App() {
+
+
+
   return (
     <div>
       <Header />
