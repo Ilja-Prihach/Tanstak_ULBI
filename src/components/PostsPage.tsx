@@ -1,6 +1,5 @@
-import {useSuspenseQueries} from "@tanstack/react-query";
+import {useQueries, useQuery, useQueryClient} from "@tanstack/react-query";
 import {api} from "../api/api.ts";
-import {Suspense} from "react";
 
 type Post = {
     id: number;
@@ -18,39 +17,40 @@ function getAuthData() {
     });
 }
 
+function getPostById(id: number) {
+    return api.get<Post>(`/posts/${id}`).then((res) => res.data);
+}
+
 function Postlist() {
-    const [userData, posts] = useSuspenseQueries({
-        queries: [
-            {
-                queryKey: ["userData"],
-                queryFn: getAuthData,
-            },
-            {
-                queryKey: ["posts"],
-                queryFn: getPosts,
-            }
-        ]
-    })
-    console.log(userData.data);
-    console.log(posts.data)
-    // const {data: userData,} = useSuspenseQuery({
-    //
-    //     staleTime: 5000,
-    //
-    // });
-    //
-    // const {data: posts,} = useSuspenseQuery({
-    //
-    //     staleTime: 5000,
-    // });
+    const queryClient = useQueryClient();
+    const {data: posts, isFetching, isPending, isLoading} = useQuery({
+        queryKey: ["posts"],
+        queryFn: getPosts,
+        retry: false
+    });
+
+    const invalidatePosts = () => {
+        // queryClient.invalidateQueries({queryKey: ["posts"]});
+        // queryClient.refetchQueries({queryKey: ["posts"]});
+        queryClient.resetQueries({queryKey: ["posts"]});
+    }
 
     return (
         <div>
-            {/*{posts?.map((post) => (*/}
-            {/*    <div key={post.id}>*/}
-            {/*        {post.id}.{post.title}*/}
-            {/*    </div>*/}
-            {/*))}*/}
+            <button
+                className="border border-gray-600 rounder-md p-2"
+                onClick={invalidatePosts}
+            >
+                INVALIDATE
+            </button>
+            {isFetching && <div>isFetching...</div>}
+            {isLoading && <div>loading...</div>}
+            {isPending && <div>isPending...</div>}
+            {posts?.map((post) => (
+                <div key={post.id}>
+                    {post.id}.{post.title}
+                </div>
+            ))}
         </div>
     )
 }
@@ -61,9 +61,7 @@ export const PostsPage = () => {
 
   return (
     <div className="flex flex-col gap-4">
-        <Suspense fallback={<h1>Loading post...</h1>}>
             <Postlist/>
-        </Suspense>
     </div>
   );
 };
