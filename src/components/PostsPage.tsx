@@ -11,9 +11,16 @@ function getPosts() {
 }
 
 export const PostsPage = () => {
-    const {data: posts, isLoading, isPending, isFetching} = useQuery({
+    const {
+        data: posts,
+        isLoading,
+        isPending,
+        isFetching
+    } = useQuery({
         queryKey: ["posts"],
         queryFn: getPosts,
+        staleTime: 5000,
+        gcTime: 10000,
     });
 
 
