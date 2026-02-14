@@ -1,4 +1,4 @@
-import { useSuspenseQuery} from "@tanstack/react-query";
+import {useSuspenseQueries} from "@tanstack/react-query";
 import {api} from "../api/api.ts";
 import {Suspense} from "react";
 
@@ -19,26 +19,38 @@ function getAuthData() {
 }
 
 function Postlist() {
-    const {data: userData,} = useSuspenseQuery({
-        queryKey: ["userData"],
-        queryFn: getAuthData,
-        staleTime: 5000,
-
-    });
-
-    const {data: posts,} = useSuspenseQuery({
-        queryKey: ["posts"],
-        queryFn: getPosts,
-        staleTime: 5000,
-    });
+    const [userData, posts] = useSuspenseQueries({
+        queries: [
+            {
+                queryKey: ["userData"],
+                queryFn: getAuthData,
+            },
+            {
+                queryKey: ["posts"],
+                queryFn: getPosts,
+            }
+        ]
+    })
+    console.log(userData.data);
+    console.log(posts.data)
+    // const {data: userData,} = useSuspenseQuery({
+    //
+    //     staleTime: 5000,
+    //
+    // });
+    //
+    // const {data: posts,} = useSuspenseQuery({
+    //
+    //     staleTime: 5000,
+    // });
 
     return (
         <div>
-            {posts?.map((post) => (
-                <div key={post.id}>
-                    {post.id}.{post.title}
-                </div>
-            ))}
+            {/*{posts?.map((post) => (*/}
+            {/*    <div key={post.id}>*/}
+            {/*        {post.id}.{post.title}*/}
+            {/*    </div>*/}
+            {/*))}*/}
         </div>
     )
 }
