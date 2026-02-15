@@ -1,21 +1,16 @@
-
+import { Outlet } from "react-router";
 import { Header } from "./Header";
-import {Suspense} from "react";
-import {Outlet} from "react-router";
-
+import { Suspense } from "react";
 
 function App() {
-
-
-
   return (
     <div>
       <Header />
       <div className="w-full max-w-4xl mx-auto p-8">
-          {/*Global fallback*/}
-          <Suspense fallback={<h1>Loading...</h1>}>
-              <Outlet/>
-          </Suspense>
+        {/* Глобальный fallback */}
+        <Suspense fallback={<h1>Loading...</h1>}>
+          <Outlet />
+        </Suspense>
       </div>
     </div>
   );
